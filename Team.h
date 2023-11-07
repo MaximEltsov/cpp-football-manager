@@ -1,19 +1,21 @@
 #pragma once
 
 #include <algorithm>
+#include <deque>
 #include <iterator>
 #include <string>
 #include <vector>
 
 #include "Player.h"
+#include "Tactics.h"
 
 class Team {
 private:
-	std::vector<Player> roaster_;
+	std::deque<Player> roaster_;
 	std::string name_;
 	std::string stadium_;
 
-	int lvl_=0;
+	double lvl_=0;
 	int goalDifference_ = 0;
 	int goalsFor_ = 0;
 	int matchesWon_ = 0;
@@ -21,6 +23,8 @@ private:
 	int matchesLost_ = 0;
 	int rating_=0;
 	short seasonPoints_=0;
+
+	Tactics tactic;
 
 public:
 
@@ -44,7 +48,8 @@ public:
 		matchesDraw_(other.matchesDraw_),
 		matchesLost_(other.matchesLost_),
 		rating_(other.rating_),
-		seasonPoints_(other.seasonPoints_)
+		seasonPoints_(other.seasonPoints_),
+		tactic(other.tactic)
 	{
 	}
 
@@ -62,6 +67,7 @@ public:
 			matchesLost_=other.matchesLost_;
 			rating_ = other.rating_;
 			seasonPoints_ = other.seasonPoints_;
+			tactic = other.tactic;
 		}
 		return *this;
 	}
@@ -80,6 +86,7 @@ public:
 			matchesLost_ = other.matchesLost_;
 			rating_ = other.rating_;
 			seasonPoints_ = other.seasonPoints_;
+			tactic = other.tactic;
 
 			other.name_ = "";
 			other.stadium_ = "";
@@ -97,6 +104,12 @@ public:
 
 	operator const Team() const {
 		return *this;
+	}
+
+	void getLvl() {
+		for (int i = 0; i < 11; ++i) {
+			lvl_ += roaster_[i].lvl_;
+		}
 	}
 
 	/*bool operator==(const Team& other) {
@@ -150,10 +163,14 @@ public:
 	}
 
 	void printTeamRoaster() {
-		std::cout << std::left << std::setw(25) << "Имя" << std::left << std::setw(20) << "Национальность" << std::left << std::setw(10) << "Возраст" << "Уровень" << std::endl;
+		std::cout << std::left << std::setw(25) << "Имя" << std::left << std::setw(20) << "Национальность" << std::left << std::setw(10) << "Возраст" << std::left << std::setw(10) << "Уровень" << std::left << std::setw(10) << "Талант"<<"Позиция"<<std::endl;
 		for (Player& player : roaster_) {
-			std::cout << std::left << std::setw(25) << player.name_ << std::left << std::setw(20) << player.nationality_<<  std::left << std::setw(10)<<player.age_<<player.lvl_<<std::endl;
+			std::cout << std::left << std::setw(25) << player.name_ << std::left << std::setw(20) << player.nationality_<<  std::left << std::setw(10)<<player.age_ << std::left << std::setw(10) <<std::fixed<<std::setprecision(1)<<player.lvl_ << std::left << std::setw(10) <<std::string(player.talant_, '*') << positions.at(player.position_)<< std::endl;
 		}
 
+	}
+
+	void sortRoaster() {
+		tactic.sortTeam(&roaster_);
 	}
 };

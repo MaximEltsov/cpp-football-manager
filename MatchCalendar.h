@@ -22,7 +22,7 @@ private:
 
 	int numTeams_=0;
 	int toursCount_ = 0;
-	int reserveDays = 1;
+	int reserveDays = 2;
 
 public:
 
@@ -36,10 +36,19 @@ public:
 
 	MatchCalendar& operator=(MatchCalendar&& other) noexcept {
 		if (this != &other) {
-			calendar_ = std::move(other.calendar_);
+			calendar_ = other.calendar_;
 		}
 		return *this;
 	}
+
+	/*MatchCalendar(int numTeams)
+		: numTeams_(numTeams), toursCount_(numTeams* CIRCLES - CIRCLES)
+	{
+		vector<int> teams(numTeams);
+		std::iota(teams.begin(), teams.end(), 1);
+
+
+	}*/
 
 	MatchCalendar(int numTeams)
 		: numTeams_(numTeams), toursCount_(numTeams* CIRCLES - CIRCLES)
@@ -60,6 +69,10 @@ public:
 			}
 		}
 		generateCalendar();
+	}
+
+	const std::vector<std::pair<int, int>> GetTour(int day) const {
+		return calendar_.at(day);
 	}
 
 	const int toursCount() const {
@@ -127,55 +140,6 @@ public:
 		system("cls");
 	}
 
-
-
-	/*void generateCalendar() {
-
-		bool success = 0;
-
-		while (!success) {
-			success = 1;
-
-			tour_team_.clear();
-			calendar_.clear();
-			reserve_.clear();
-
-			std::shuffle(matches_.begin(), matches_.end(), std::mt19937(std::random_device()()));
-			for (int i = 0; i < matches_.size(); ++i) {
-				for (int j = 1; j <= toursCount_ + reserveDays; ++j) {
-					if (tour_team_[j].count(matches_[i].first) == 0 && tour_team_[j].count(matches_[i].second) == 0) {
-						tour_team_[j].insert(matches_[i].first);
-						tour_team_[j].insert(matches_[i].second);
-						calendar_[j].push_back(std::move(matches_[i]));
-						break;
-					}
-				}
-			}
-
-			std::shuffle(matches_.begin(), matches_.end(), std::mt19937(std::random_device()()));
-
-			for (int i = 0; i < matches_.size(); ++i) {
-				for (int j = toursCount_ + reserveDays; j >= 1; --j) {
-					if (tour_team_[j].count(matches_[i].first) == 0 && tour_team_[j].count(matches_[i].second) == 0) {
-						tour_team_[j].insert(matches_[i].first);
-						tour_team_[j].insert(matches_[i].second);
-						std::swap(matches_[i].first, matches_[i].second);
-						calendar_[j].push_back(std::move(matches_[i]));
-						break;
-					}
-					if (j == 1) {
-						success = 0;
-						break;
-					}
-				}
-			}
-
-			if (calendar_.size() != toursCount_ + reserveDays) {
-				success = 0;
-			}
-		}
-	}*/
-
 	std::map<int, std::vector<std::pair<int, int>>> getCalendar() const {
 		return calendar_;
 	}
@@ -184,14 +148,14 @@ public:
 		for (const auto& tour : calendar_) {
 			std::cout << "Tour " << tour.first << std::endl;
 			for (const auto& match : tour.second) {
-				std::cout << "Team " << match.first << " vs Team" << match.second << std::endl;
+				std::cout << std::left << std::setw(25)<< "Team " << match.first << " vs Team" << match.second << std::endl;
 			}
 		}
 		
 		int sum = 0;
 		for (const auto& tour : calendar_) {
 			
-			std::cout << tour.first<<" "<<tour.second.size() << std::endl;
+			std::cout <<std::left << std::setw(25) << tour.first<<" "<<tour.second.size() << std::endl;
 			sum += static_cast<int>(tour.second.size());
 		}
 		std::cout << sum;

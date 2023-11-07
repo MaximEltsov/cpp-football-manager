@@ -10,11 +10,17 @@ int main() {
 	ItalianChampionship game;
 	game.SetTeam();
 	//game.printCalendar();
-	//(*game.playerTeam_).printTeamRoaster();
+	/*(*game.playerTeam_).printTeamRoaster();
+	(*game.playerTeam_).sortRoaster();
+	(*game.playerTeam_).printTeamRoaster();*/
 	for (int i = 1; i <= game.tourCount(); ++i) {
-		game.printTable();
+		//game.printTour();
 		game.playTour();
+		//game.PrintTourResult();
+		game.printTable();
 	}
+	//game.printTable();
+
 
 	return 0;
 };
